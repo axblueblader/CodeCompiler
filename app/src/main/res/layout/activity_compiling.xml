@@ -48,7 +48,7 @@
             android:fontFamily="serif-monospace"
             android:paddingHorizontal="10dp"
             android:paddingVertical="10dp"
-            android:text="Results here"
+            android:hint="Result here"
             android:textSize="12sp" />
     </ScrollView>
 </LinearLayout>

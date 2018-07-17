@@ -90,6 +90,7 @@ public class CompilingActivity extends AppCompatActivity {
         task.execute();
         Toast.makeText(this, "Compiling code", Toast.LENGTH_SHORT).show();
         compileBtn.setText("EXECUTING CODE");
+        compileBtn.setEnabled(false);
     }
 
     public void showResults(String result) throws JSONException {
@@ -103,11 +104,28 @@ public class CompilingActivity extends AppCompatActivity {
         String memory = json.getString("memory");
         String cpuTime = json.getString("cpuTime");
 
-        resultText.setText("OUTPUT:\n" + output + "\nMEMORY: " + memory + "\nCPU TIME: " + cpuTime);
+        resultText.setText(resultText.getText() +  "\nOUTPUT:\n" + output + "\nMEMORY: " + memory + "\nCPU TIME: " + cpuTime + "\n");
+        scrollToBottom();
         compileBtn.setText("EXECUTE");
+        compileBtn.setEnabled(true);
     }
 
-    public class CallCompilerAPI extends AsyncTask<String,Integer,String> {
+    private void scrollToBottom()
+    {
+        mScrollView.post(new Runnable()
+        {
+            public void run()
+            {
+                mScrollView.smoothScrollTo(0, resultText.getBottom());
+            }
+        });
+    }
+
+    private void showProgress(String progress) {
+        resultText.setText(resultText.getText() + "\n" + progress);
+    }
+
+    public class CallCompilerAPI extends AsyncTask<String,String,String> {
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -117,8 +135,9 @@ public class CompilingActivity extends AppCompatActivity {
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
 
-                Log.d("TAG",input);
 
+                Log.d("TAG",input);
+                publishProgress("Making request to API");
                 // Create JSONObject Request
                 JSONObject jsonRequest = new JSONObject();
                 jsonRequest.put("clientId", clientId);
@@ -133,13 +152,14 @@ public class CompilingActivity extends AppCompatActivity {
                 OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
                 out.write(jsonRequest.toString());
                 out.close();
-
+                publishProgress("Retrieving results");
                 // Connection failed
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     throw new RuntimeException("Please check your inputs : HTTP error code : "+ connection.getResponseCode());
                 }
 
                 // Retrieving results
+
                 BufferedReader bufferedReader;
                 bufferedReader = new BufferedReader(new InputStreamReader(
                         (connection.getInputStream())));
@@ -169,7 +189,7 @@ public class CompilingActivity extends AppCompatActivity {
             return "Empty string";
         }
         @Override
-        protected void onProgressUpdate(Integer... progress) {
+        protected void onProgressUpdate(String... progress) {
             showProgress(progress[0]);
         }
         @Override
@@ -181,11 +201,6 @@ public class CompilingActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void showProgress(Integer progress) {
-        compileBtn.setText("PROGRESS: " + progress +"%");
-    }
-
 
     // Snippet credit to Jared Rummler from his answer in this post
     // https://stackoverflow.com/questions/42786493/syntax-highlighting-on-android-edittext-using-span?rq=1
