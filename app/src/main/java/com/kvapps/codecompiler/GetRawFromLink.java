@@ -9,20 +9,34 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class GetRawFromLink extends AsyncTask<URL, Void, String> {
+    public interface AsyncResponse {
+        void processFinish(String output);
+    }
+
+    public AsyncResponse response;
+
+    public GetRawFromLink(AsyncResponse response){
+        this.response = response;
+    }
     @Override
     protected String doInBackground(URL... urls) {
-        String string = "";
+        StringBuilder string = new StringBuilder();
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urls[0].openStream()));
-            String content = "";
+            String content;
             while ((content = bufferedReader.readLine()) != null){
-                string += content;
-                string += '\n';
+                string.append(content);
+                string.append('\n');
             }
-            Log.d("kiet", string);
+            Log.d("kiet", string.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return string;
+        return string.toString();
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        response.processFinish(s);
     }
 }
