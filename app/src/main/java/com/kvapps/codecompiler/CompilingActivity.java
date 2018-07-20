@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class CompilingActivity extends AppCompatActivity {
     private TextView resultText;
     private EditText codeText;
-    private Button compileBtn;
+    private ImageButton compileBtn;
     private ScrollView mScrollView;
     String testScript = "#include <iostream>\n" +
             "\n" +
@@ -91,7 +92,7 @@ public class CompilingActivity extends AppCompatActivity {
     public void retrieveAPI(){
         new AsyncTaskAPI().execute(codeText.getText().toString());
         Toast.makeText(this, "Compiling code", Toast.LENGTH_SHORT).show();
-        compileBtn.setText("EXECUTING CODE");
+        //compileBtn.setText("EXECUTING CODE");
         compileBtn.setEnabled(false);
     }
 
@@ -108,7 +109,7 @@ public class CompilingActivity extends AppCompatActivity {
 
         resultText.setText(resultText.getText() +  "\nOUTPUT:\n" + output + "\nMEMORY: " + memory + "\nCPU TIME: " + cpuTime + "\n");
         scrollToBottom();
-        compileBtn.setText("EXECUTE");
+        //compileBtn.setText("EXECUTE");
         compileBtn.setEnabled(true);
     }
 
