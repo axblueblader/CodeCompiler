@@ -39,10 +39,7 @@ public class CompilingActivity extends AppCompatActivity {
     private EditText codeText;
     private Button compileBtn;
     private ScrollView mScrollView;
-
-    String clientId = "c8807bf538e0e9db198229a3efad101d"; //Replace with your client ID
-    String clientSecret = "3bd3383373412f109935801fd3aba476619704ff9b0309f7f2ea7c58067c5f06"; //Replace with your client Secret
-    String script = "#include <iostream>\n" +
+    String testScript = "#include <iostream>\n" +
             "\n" +
             "using namespace std;\n" +
             "\n" +
@@ -53,11 +50,6 @@ public class CompilingActivity extends AppCompatActivity {
             "\n" +
             "\tcout<<\"Sum of x+y = \" << z;\n" +
             "}";
-    String language = "cpp";
-    int versionIndex = 0;
-    String input = "{\"clientId\": \"" + clientId + "\",\"clientSecret\":\"" + clientSecret + "\",\"script\":\"" + script +
-            "\",\"language\":\"" + language + "\",\"versionIndex\":\"" + versionIndex + "\"} ";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +62,10 @@ public class CompilingActivity extends AppCompatActivity {
 
         // Initialize view methods and properties
 
-        mScrollView = (ScrollView) findViewById(R.id.resultScrollView);
+        mScrollView = findViewById(R.id.resultScrollView);
 
         codeText.setMovementMethod(new ScrollingMovementMethod());
-        codeText.setText(script);
+        codeText.setText(testScript);
         SyntaxHighlight highlighter = new SyntaxHighlight();
         codeText.addTextChangedListener(highlighter);
 
@@ -85,9 +77,19 @@ public class CompilingActivity extends AppCompatActivity {
         });
     }
 
+    private void scrollToBottom()
+    {
+        mScrollView.post(new Runnable()
+        {
+            public void run()
+            {
+                mScrollView.smoothScrollTo(0, resultText.getBottom());
+            }
+        });
+    }
+
     public void retrieveAPI(){
-        CallCompilerAPI task = new CallCompilerAPI();
-        task.execute();
+        new AsyncTaskAPI().execute(codeText.getText().toString());
         Toast.makeText(this, "Compiling code", Toast.LENGTH_SHORT).show();
         compileBtn.setText("EXECUTING CODE");
         compileBtn.setEnabled(false);
@@ -110,84 +112,11 @@ public class CompilingActivity extends AppCompatActivity {
         compileBtn.setEnabled(true);
     }
 
-    private void scrollToBottom()
-    {
-        mScrollView.post(new Runnable()
-        {
-            public void run()
-            {
-                mScrollView.smoothScrollTo(0, resultText.getBottom());
-            }
-        });
-    }
-
     private void showProgress(String progress) {
         resultText.setText(resultText.getText() + "\n" + progress);
     }
 
-    public class CallCompilerAPI extends AsyncTask<String,String,String> {
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                URL url = new URL("https://api.jdoodle.com/execute");
-                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-
-
-                Log.d("TAG",input);
-                publishProgress("Making request to API");
-                // Create JSONObject Request
-                JSONObject jsonRequest = new JSONObject();
-                jsonRequest.put("clientId", clientId);
-                jsonRequest.put("clientSecret", clientSecret);
-                jsonRequest.put("script", codeText.getText().toString());
-                jsonRequest.put("language", language);
-                // API wants versionIndex to be integer type for some reason
-                jsonRequest.put("versionIndex", versionIndex);
-
-
-                // Write Request to output stream to server.
-                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-                out.write(jsonRequest.toString());
-                out.close();
-                publishProgress("Retrieving results");
-                // Connection failed
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    throw new RuntimeException("Please check your inputs : HTTP error code : "+ connection.getResponseCode());
-                }
-
-                // Retrieving results
-
-                BufferedReader bufferedReader;
-                bufferedReader = new BufferedReader(new InputStreamReader(
-                        (connection.getInputStream())));
-
-                // Build into string
-                StringBuilder stringBuilder = new StringBuilder("");
-                String tmp;
-                Log.d("TAG","Output from JDoodle .... \n");
-                while ((tmp = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(tmp + "\n");
-                }
-                String output = stringBuilder.toString();
-                Log.d("API",output);
-
-                connection.disconnect();
-                return output;
-
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "Empty string";
-        }
+    private class AsyncTaskAPI extends CallCompilerAPI {
         @Override
         protected void onProgressUpdate(String... progress) {
             showProgress(progress[0]);
