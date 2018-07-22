@@ -1,18 +1,19 @@
 package com.kvapps.codecompiler;
 
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -22,20 +23,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.HttpsURLConnection;
-
-public class CompilingActivity extends AppCompatActivity {
+public class CompilingActivity extends Fragment {
     private TextView resultText;
     private EditText codeText;
     private ImageButton compileBtn;
@@ -52,18 +43,22 @@ public class CompilingActivity extends AppCompatActivity {
             "\tcout<<\"Sum of x+y = \" << z;\n" +
             "}";
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compiling);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_compiling, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         // Initialize view variables
-        resultText = findViewById(R.id.resultText);
-        codeText = findViewById(R.id.codeText);
-        compileBtn = findViewById(R.id.compileBtn);
+        resultText = view.findViewById(R.id.resultText);
+        codeText = view.findViewById(R.id.codeText);
+        compileBtn = view.findViewById(R.id.compileBtn);
 
 
         // Initialize view methods and properties
 
-        mScrollView = findViewById(R.id.resultScrollView);
+        mScrollView = view.findViewById(R.id.resultScrollView);
 
         codeText.setMovementMethod(new ScrollingMovementMethod());
         codeText.setText(testScript);
@@ -91,13 +86,13 @@ public class CompilingActivity extends AppCompatActivity {
 
     public void retrieveAPI(){
         new AsyncTaskAPI().execute(codeText.getText().toString());
-        Toast.makeText(this, "Compiling code", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Compiling code", Toast.LENGTH_SHORT).show();
         //compileBtn.setText("EXECUTING CODE");
         compileBtn.setEnabled(false);
     }
 
     public void showResults(String result) throws JSONException {
-        Toast.makeText(this, "Compiled successfully", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Compiled successfully", Toast.LENGTH_LONG).show();
 
         // Parsing result string into json
         JSONObject json = new JSONObject(result);
@@ -117,7 +112,7 @@ public class CompilingActivity extends AppCompatActivity {
         resultText.setText(resultText.getText() + "\n" + progress);
     }
 
-    private class AsyncTaskAPI extends CallCompilerAPI {
+    public class AsyncTaskAPI extends CallCompilerAPI {
         @Override
         protected void onProgressUpdate(String... progress) {
             showProgress(progress[0]);
