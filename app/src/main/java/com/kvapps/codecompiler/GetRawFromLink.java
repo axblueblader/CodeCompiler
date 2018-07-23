@@ -8,21 +8,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class GetRawFromLink extends AsyncTask<URL, Void, String> {
+public class GetRawFromLink extends AsyncTask<String, Void, String> {
     public interface AsyncResponse {
-        void processFinish(String output);
+        void onDataArrive(String output);
     }
 
-    public AsyncResponse response;
+    private AsyncResponse response;
 
     public GetRawFromLink(AsyncResponse response){
         this.response = response;
     }
     @Override
-    protected String doInBackground(URL... urls) {
+    protected String doInBackground(String... strings) {
         StringBuilder string = new StringBuilder();
         try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urls[0].openStream()));
+            URL url = new URL(strings[0]);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
             String content;
             while ((content = bufferedReader.readLine()) != null){
                 string.append(content);
@@ -37,6 +38,6 @@ public class GetRawFromLink extends AsyncTask<URL, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        response.processFinish(s);
+       response.onDataArrive(s);
     }
 }
