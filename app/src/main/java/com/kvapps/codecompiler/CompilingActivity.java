@@ -1,5 +1,6 @@
 package com.kvapps.codecompiler;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -68,10 +69,27 @@ public class CompilingActivity extends Fragment {
         compileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                retrieveAPI();
+                sendMessage.sendData(codeText.getText().toString());
             }
         });
     }
+    SendMessage sendMessage;
+
+    interface SendMessage {
+        void sendData(String message);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            sendMessage = (SendMessage) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Error in retrieving data. Please try again");
+        }
+    }
+
 
     private void scrollToBottom()
     {
