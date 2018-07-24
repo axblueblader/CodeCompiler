@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements CompilingActivity
         tabLayout.setupWithViewPager(viewPager);
 
 
-
        /* toolBar = findViewById(R.id.toolbar);
         //toolBar.setTitle(null);
         //toolBar.setSubtitle(null);
