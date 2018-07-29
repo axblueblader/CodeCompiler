@@ -7,75 +7,51 @@
     android:orientation="vertical"
     tools:context=".CompilingActivity">
 
+
+    <EditText
+        android:id="@+id/codeText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:fontFamily="monospace"
+        android:hint="Code here"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
+        android:textSize="12sp"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_weight="6">
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        >
 
-        <EditText
-            android:id="@+id/codeText"
+        <ImageButton
+            android:id="@+id/pasteLinkBtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="9"
-            android:fontFamily="monospace"
-            android:hint="Code here"
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="10dp"
-            android:textSize="12sp"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="4">
-        <ScrollView
-            android:id="@+id/resultScrollView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:layout_weight="8"
-            android:fillViewport="true">
+            android:layout_weight="1"
+            android:src="@drawable/ic_paste_link"
+            android:tooltipText="Paste from PASTEBIN link" />
 
-            <TextView
-                android:id="@+id/resultText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="serif-monospace"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="10dp"
-                android:hint="Result here"
-                android:textSize="12sp" />
-        </ScrollView>
-        <LinearLayout
-            android:layout_width="0dp"
+        <ImageButton
+            android:id="@+id/pasteBoardBtn"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="2">
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:tooltipText="Paste from PASTEBIN link"
-                android:src="@drawable/ic_paste_link"
-                android:id="@+id/pasteLinkBtn"/>
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:tooltipText="Paste from clipboard"
-                android:src="@drawable/ic_paste_board"
-                android:id="@+id/pasteBoardBtn"/>
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:tooltipText="EXECUTE"
-                android:src="@drawable/ic_execute"
-                android:id="@+id/compileBtn"/>
-        </LinearLayout>
+            android:layout_weight="1"
+            android:src="@drawable/ic_paste_board"
+            android:tooltipText="Paste from clipboard" />
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_execute"
+            android:tooltipText="EXECUTE"
+            android:id="@+id/compileBtn" />
     </LinearLayout>
+
 </LinearLayout>

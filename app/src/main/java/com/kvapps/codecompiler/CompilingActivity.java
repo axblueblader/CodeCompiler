@@ -1,5 +1,6 @@
 package com.kvapps.codecompiler;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,17 +18,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CompilingActivity extends Fragment {
-    private TextView resultText;
+    //private TextView resultText;
     private EditText codeText;
     private ImageButton compileBtn;
     private ScrollView mScrollView;
@@ -51,7 +47,7 @@ public class CompilingActivity extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Initialize view variables
-        resultText = view.findViewById(R.id.resultText);
+        //resultText = view.findViewById(R.id.resultText);
         codeText = view.findViewById(R.id.codeText);
         compileBtn = view.findViewById(R.id.compileBtn);
 
@@ -68,62 +64,24 @@ public class CompilingActivity extends Fragment {
         compileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                retrieveAPI();
+                sendMessage.sendData(codeText.getText().toString());
             }
         });
     }
+    SendMessage sendMessage;
 
-    private void scrollToBottom()
-    {
-        mScrollView.post(new Runnable()
-        {
-            public void run()
-            {
-                mScrollView.smoothScrollTo(0, resultText.getBottom());
-            }
-        });
+    interface SendMessage {
+        void sendData(String message);
     }
 
-    public void retrieveAPI(){
-        new AsyncTaskAPI().execute(codeText.getText().toString());
-        Toast.makeText(getActivity(), "Compiling code", Toast.LENGTH_SHORT).show();
-        //compileBtn.setText("EXECUTING CODE");
-        compileBtn.setEnabled(false);
-    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-    public void showResults(String result) throws JSONException {
-        Toast.makeText(getActivity(), "Compiled successfully", Toast.LENGTH_LONG).show();
-
-        // Parsing result string into json
-        JSONObject json = new JSONObject(result);
-
-        // Retrieve data by key
-        String output = json.getString("output");
-        String memory = json.getString("memory");
-        String cpuTime = json.getString("cpuTime");
-
-        resultText.setText(resultText.getText() +  "\nOUTPUT:\n" + output + "\nMEMORY: " + memory + "\nCPU TIME: " + cpuTime + "\n");
-        scrollToBottom();
-        //compileBtn.setText("EXECUTE");
-        compileBtn.setEnabled(true);
-    }
-
-    private void showProgress(String progress) {
-        resultText.setText(resultText.getText() + "\n" + progress);
-    }
-
-    public class AsyncTaskAPI extends CallCompilerAPI {
-        @Override
-        protected void onProgressUpdate(String... progress) {
-            showProgress(progress[0]);
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                showResults(result);}
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            sendMessage = (SendMessage) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Error in retrieving data. Please try again");
         }
     }
 
