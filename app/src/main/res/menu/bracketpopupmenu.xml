@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="[ ]"
+        android:id="@+id/squareBracketOption"/>
+    <item
+        android:title="{ }"
+        android:id="@+id/curlyBracesOption"/>
+    <item
+        android:title="&lt;&lt;"
+        android:id="@+id/cinOption"/>
+    <item
+        android:title="&gt;&gt;"
+        android:id="@+id/coutOption"/>
+</menu>
