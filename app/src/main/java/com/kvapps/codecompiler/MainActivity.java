@@ -18,14 +18,12 @@ public class MainActivity extends AppCompatActivity implements CompilingActivity
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
-
         adapter = new TabAdapter(getSupportFragmentManager());
         adapter.addFragment(new CompilingActivity(), "Code");
         adapter.addFragment(new OutputFragment(), "Output");
         //adapter.addFragment(new Tab3Fragment(), "Tab 3");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-
 
         //toolBar = findViewById(R.id.toolbar);
         //toolBar.setTitle(null);

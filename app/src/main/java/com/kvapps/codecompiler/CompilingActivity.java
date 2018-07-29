@@ -13,16 +13,15 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.ScrollView;
+
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,10 +30,13 @@ public class CompilingActivity extends Fragment implements
         View.OnClickListener,
         View.OnLongClickListener,
         PopupMenu.OnMenuItemClickListener{
+
     //private TextView resultText;
     private EditText codeText;
-    private ImageButton compileBtn;
-    private ScrollView mScrollView;
+    //private ImageButton compileBtn;
+    //private ScrollView mScrollView;
+    private FloatingActionButton execBtn;
+
     String testScript = "#include <iostream>\n" +
             "\n" +
             "using namespace std;\n" +
@@ -56,19 +58,27 @@ public class CompilingActivity extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         // Initialize view variables
         //resultText = view.findViewById(R.id.resultText);
+        //compileBtn = view.findViewById(R.id.compileBtn);
         codeText = view.findViewById(R.id.codeText);
-        compileBtn = view.findViewById(R.id.compileBtn);
+        execBtn = view.findViewById(R.id.menu_item_execute);
 
         // Initialize view methods and properties
 
-        mScrollView = view.findViewById(R.id.resultScrollView);
+       // mScrollView = view.findViewById(R.id.resultScrollView);
 
         codeText.setMovementMethod(new ScrollingMovementMethod());
         codeText.setText(testScript);
         SyntaxHighlight highlighter = new SyntaxHighlight();
         codeText.addTextChangedListener(highlighter);
 
-        compileBtn.setOnClickListener(new View.OnClickListener() {
+        /*compileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage.sendData(codeText.getText().toString());
+            }
+        });*/
+
+        execBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage.sendData(codeText.getText().toString());

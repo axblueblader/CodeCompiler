@@ -29,7 +29,7 @@ public class CallCompilerAPI extends AsyncTask<String,String,String> {
         this.input = "{\"clientId\": \"" + clientId + "\",\"clientSecret\":\"" + clientSecret + "\",\"script\":\"" + strings[0] +
                 "\",\"language\":\"" + language + "\",\"versionIndex\":\"" + versionIndex + "\"} ";
         try {
-            URL url = new URL("https://api.jdoodle.com/execute");
+            URL url = new URL("https://api.jdoodle.com/v1/execute");
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
@@ -86,7 +86,7 @@ public class CallCompilerAPI extends AsyncTask<String,String,String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "Empty string";
+        return "";
     }
 
 
