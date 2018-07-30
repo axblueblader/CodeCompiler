@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity implements CompilingActivity
     }
 
     @Override
-    public void sendData(String message) {
+    public void sendData(String code,String stdin) {
         //String tag = "android:switcher:" + R.id.viewPager + ":" + 1;
         OutputFragment f = (OutputFragment)adapter.getItem(1);
-        f.retrieveAPI(message);
+        f.retrieveAPI(code,stdin);
         setCurrentItem(1,true);
     }
 

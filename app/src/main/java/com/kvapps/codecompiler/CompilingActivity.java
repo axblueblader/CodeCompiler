@@ -29,6 +29,7 @@ public class CompilingActivity extends Fragment{
     //private ScrollView mScrollView;
 
     private EditText codeText;
+    private EditText stdinText;
     private FloatingActionButton execBtn;
 
     String testScript = "#include <iostream>\n" +
@@ -36,7 +37,7 @@ public class CompilingActivity extends Fragment{
             "using namespace std;\n" +
             "\n" +
             "int main() {\n" +
-            "\tint x=10;\n" +
+            "\tint x=0;\n cin>>x;\n" +
             "\tint y=25;\n" +
             "\tint z=x+y;\n" +
             "\n" +
@@ -54,7 +55,7 @@ public class CompilingActivity extends Fragment{
         //resultText = view.findViewById(R.id.resultText);
         //compileBtn = view.findViewById(R.id.compileBtn);
         codeText = view.findViewById(R.id.codeText);
-
+        stdinText = view.findViewById(R.id.stdinText);
 
 
         // Initialize view methods and properties
@@ -70,7 +71,7 @@ public class CompilingActivity extends Fragment{
         execBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage.sendData(codeText.getText().toString());
+                sendMessage.sendData(codeText.getText().toString(),stdinText.getText().toString());
             }
         });
 
@@ -88,7 +89,7 @@ public class CompilingActivity extends Fragment{
 
 
     interface SendMessage {
-        void sendData(String message);
+        void sendData(String code,String stdin);
     }
 
     @Override

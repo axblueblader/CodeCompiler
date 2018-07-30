@@ -24,6 +24,7 @@ public class CallCompilerAPI extends AsyncTask<String,String,String> {
     private String language = "cpp";
     private int versionIndex = 0;
     private String input;
+
     @Override
     protected String doInBackground(String... strings) {
         this.input = "{\"clientId\": \"" + clientId + "\",\"clientSecret\":\"" + clientSecret + "\",\"script\":\"" + strings[0] +
@@ -43,6 +44,10 @@ public class CallCompilerAPI extends AsyncTask<String,String,String> {
             jsonRequest.put("clientId", clientId);
             jsonRequest.put("clientSecret", clientSecret);
             jsonRequest.put("script",strings[0]);
+            if (!strings[1].isEmpty())
+            {
+                jsonRequest.put("stdin",strings[1]);
+            }
             jsonRequest.put("language", language);
             // API wants versionIndex to be integer type for some reason
             jsonRequest.put("versionIndex", versionIndex);
