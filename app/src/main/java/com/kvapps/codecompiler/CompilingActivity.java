@@ -13,28 +13,22 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 
 import com.github.clans.fab.FloatingActionButton;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CompilingActivity extends Fragment implements
-        View.OnClickListener,
-        View.OnLongClickListener,
-        PopupMenu.OnMenuItemClickListener{
-
+public class CompilingActivity extends Fragment{
     //private TextView resultText;
-    private EditText codeText;
     //private ImageButton compileBtn;
     //private ScrollView mScrollView;
+
+    private EditText codeText;
     private FloatingActionButton execBtn;
 
     String testScript = "#include <iostream>\n" +
@@ -60,24 +54,19 @@ public class CompilingActivity extends Fragment implements
         //resultText = view.findViewById(R.id.resultText);
         //compileBtn = view.findViewById(R.id.compileBtn);
         codeText = view.findViewById(R.id.codeText);
-        execBtn = view.findViewById(R.id.menu_item_execute);
+
+
 
         // Initialize view methods and properties
 
-       // mScrollView = view.findViewById(R.id.resultScrollView);
+        //mScrollView = view.findViewById(R.id.resultScrollView);
 
         codeText.setMovementMethod(new ScrollingMovementMethod());
         codeText.setText(testScript);
         SyntaxHighlight highlighter = new SyntaxHighlight();
         codeText.addTextChangedListener(highlighter);
 
-        /*compileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage.sendData(codeText.getText().toString());
-            }
-        });*/
-
+        execBtn = view.findViewById(R.id.menu_item_execute);
         execBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,88 +75,17 @@ public class CompilingActivity extends Fragment implements
         });
 
         //Edit button
-        Button tab = view.findViewById(R.id.tabButton);
-        tab.setOnClickListener(this);
-        Button semicolon = view.findViewById(R.id.semicolonButton);
-        semicolon.setOnClickListener(this);
+        EditButtonListenerManager editButtonListenerManager = new EditButtonListenerManager(codeText, getActivity());
+        Button tabBtn = view.findViewById(R.id.tabButton);
+        Button semicolonBtn = view.findViewById(R.id.semicolonButton);
         Button forBtn = view.findViewById(R.id.forButton);
-        forBtn.setOnClickListener(this);
-        forBtn.setOnLongClickListener(this);
         Button bracketBtn = view.findViewById(R.id.bracketButton);
-        bracketBtn.setOnClickListener(this);
-        bracketBtn.setOnLongClickListener(this);
+        editButtonListenerManager.setButtonOnClickListener(tabBtn, semicolonBtn, forBtn, bracketBtn);
+        editButtonListenerManager.setButtonOnLongClickListener(forBtn, bracketBtn);
 
     }
     SendMessage sendMessage;
 
-    @Override
-    public void onClick(View v) {
-        int start= Math.max(codeText.getSelectionStart(), 0);
-        int end = Math.max(codeText.getSelectionEnd(), 0);
-        String tmp;
-        switch (v.getId()){
-            case R.id.tabButton:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), "\t", 0, 1);
-                break;
-            case R.id.semicolonButton:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), ";", 0, 1);
-                break;
-            case R.id.forButton:
-                tmp = "for(int  =  ;  ;  ){ }";
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), tmp, 0, tmp.length());
-                break;
-            case R.id.bracketButton:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), "( )", 0, 3);
-                break;
-        }
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
-        MenuInflater menuInflater = new MenuInflater(getActivity());
-        popupMenu.setOnMenuItemClickListener(this);
-        switch(v.getId()){
-            case R.id.forButton:
-                menuInflater.inflate(R.menu.forpopupmenu, popupMenu.getMenu());
-                break;
-            case R.id.bracketButton:
-                menuInflater.inflate(R.menu.bracketpopupmenu, popupMenu.getMenu());
-                break;
-        }
-        popupMenu.show();
-        return false;
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        int start= Math.max(codeText.getSelectionStart(), 0);
-        int end = Math.max(codeText.getSelectionEnd(), 0);
-        String tmp;
-        switch (item.getItemId()){
-            case R.id.ifOption:
-                tmp = "if( ) { }";
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), tmp, 0, tmp.length());
-                break;
-            case R.id.whileOption:
-                tmp = "while( ) { }";
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), tmp, 0, tmp.length());
-                break;
-            case R.id.squareBracketOption:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), "[ ]", 0, 3);
-                break;
-            case R.id.curlyBracesOption:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), "{ }", 0, 3);
-                break;
-            case R.id.cinOption:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), ">>", 0, 2);
-                break;
-            case R.id.coutOption:
-                codeText.getText().replace(Math.min(start, end), Math.max(start, end), "<<", 0, 2);
-                break;
-        }
-        return false;
-    }
 
     interface SendMessage {
         void sendData(String message);
