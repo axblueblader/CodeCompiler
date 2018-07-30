@@ -1,11 +1,13 @@
 package com.kvapps.codecompiler;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 
@@ -30,7 +33,9 @@ public class CompilingActivity extends Fragment{
 
     private EditText codeText;
     private EditText stdinText;
+    private EditText currentEditText;
     private FloatingActionButton execBtn;
+    private FloatingActionButton pasteLinkBtn;
 
     String testScript = "#include <iostream>\n" +
             "\n" +
@@ -54,10 +59,30 @@ public class CompilingActivity extends Fragment{
         // Initialize view variables
         //resultText = view.findViewById(R.id.resultText);
         //compileBtn = view.findViewById(R.id.compileBtn);
-        codeText = view.findViewById(R.id.codeText);
+        codeText = currentEditText = view.findViewById(R.id.codeText);
         stdinText = view.findViewById(R.id.stdinText);
 
+        codeText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    currentEditText = codeText;
+                    codeText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0,9.0f));
+                    stdinText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0,1.0f));
+                }
+            }
+        });
 
+        stdinText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    currentEditText = stdinText;
+                    stdinText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0,9.0f));
+                    codeText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0,1.0f));
+                }
+            }
+        });
         // Initialize view methods and properties
 
         //mScrollView = view.findViewById(R.id.resultScrollView);
@@ -76,13 +101,58 @@ public class CompilingActivity extends Fragment{
         });
 
         //Edit button
-        EditButtonListenerManager editButtonListenerManager = new EditButtonListenerManager(codeText, getActivity());
+        EditButtonListenerManager editButtonListenerManager = new EditButtonListenerManager(currentEditText, getActivity());
         Button tabBtn = view.findViewById(R.id.tabButton);
         Button semicolonBtn = view.findViewById(R.id.semicolonButton);
         Button forBtn = view.findViewById(R.id.forButton);
         Button bracketBtn = view.findViewById(R.id.bracketButton);
         editButtonListenerManager.setButtonOnClickListener(tabBtn, semicolonBtn, forBtn, bracketBtn);
         editButtonListenerManager.setButtonOnLongClickListener(forBtn, bracketBtn);
+
+        //Paste link  button
+
+        pasteLinkBtn = view.findViewById(R.id.menu_item_pastelink);
+        //https://stackoverflow.com/questions/4134117/edittext-on-a-popup-window
+        pasteLinkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Popup an alert with Edittext in it
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+                alert.setTitle("Input from link");
+                alert.setMessage("Please paste your RAW link here");
+
+                // Set an EditText view to get user input
+                final EditText input = new EditText(getActivity());
+                input.setHint("https://pastebin.com/raw/asdfgh");
+                //TODO remove this link later on
+                input.setText("https://pastebin.com/raw/0GiN8ySH");
+                alert.setView(input);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        // Do something with value!
+                        GetRawFromLink getRawFromLink = new GetRawFromLink(new GetRawFromLink.AsyncResponse() {
+                            @Override
+                            public void onDataArrive(String output) {
+                                currentEditText.setText(output);
+                            }
+                        });
+                        //TODO set some message when getting data
+                        getRawFromLink.execute(input.getText().toString());
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+        });
 
     }
     SendMessage sendMessage;
