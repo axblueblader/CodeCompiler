@@ -13,16 +13,21 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CompilingActivity extends Fragment {
+public class CompilingActivity extends Fragment{
     //private TextView resultText;
     private EditText codeText;
     private ImageButton compileBtn;
@@ -51,7 +56,6 @@ public class CompilingActivity extends Fragment {
         codeText = view.findViewById(R.id.codeText);
         compileBtn = view.findViewById(R.id.compileBtn);
 
-
         // Initialize view methods and properties
 
         mScrollView = view.findViewById(R.id.resultScrollView);
@@ -67,8 +71,20 @@ public class CompilingActivity extends Fragment {
                 sendMessage.sendData(codeText.getText().toString());
             }
         });
+
+        //Edit button
+        EditButtonListenerManager editButtonListenerManager = new EditButtonListenerManager(codeText, getActivity());
+        Button tabBtn = view.findViewById(R.id.tabButton);
+        Button semicolonBtn = view.findViewById(R.id.semicolonButton);
+        Button forBtn = view.findViewById(R.id.forButton);
+        Button bracketBtn = view.findViewById(R.id.bracketButton);
+        editButtonListenerManager.setButtonOnClickListener(tabBtn, semicolonBtn, forBtn, bracketBtn);
+        editButtonListenerManager.setButtonOnLongClickListener(forBtn, bracketBtn);
+
+
     }
     SendMessage sendMessage;
+
 
     interface SendMessage {
         void sendData(String message);

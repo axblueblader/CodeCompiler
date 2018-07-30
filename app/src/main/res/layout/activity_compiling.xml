@@ -51,7 +51,37 @@
             android:layout_weight="1"
             android:src="@drawable/ic_execute"
             android:tooltipText="EXECUTE"
-            android:id="@+id/compileBtn" />
+            android:id="@+id/compileBtn"/>
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="tab"
+            android:id="@+id/tabButton"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="for"
+            android:id="@+id/forButton"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="( )"
+            android:id="@+id/bracketButton"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text=";"
+            android:id="@+id/semicolonButton"/>
+    </LinearLayout>
 </LinearLayout>
