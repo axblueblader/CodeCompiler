@@ -53,34 +53,38 @@
             <Button
                 android:id="@+id/tabButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="tab"
-                android:textSize="12sp" />
+                android:textSize="10sp"
+                style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
             <Button
                 android:id="@+id/forButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="for"
-                android:textSize="12sp" />
+                android:textSize="10sp"
+                style="@style/Base.Widget.AppCompat.Button.Colored" />
 
             <Button
                 android:id="@+id/bracketButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="( )"
-                android:textSize="12sp" />
+                android:textSize="10sp"
+                style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
             <Button
                 android:id="@+id/semicolonButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=";"
-                android:textSize="12sp" />
+                android:textSize="10sp"
+                style="@style/Base.Widget.AppCompat.Button.Colored" />
         </LinearLayout>
     </LinearLayout>
 
@@ -91,7 +95,7 @@
             android:layout_gravity="bottom|end"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="100dp"
             android:layout_marginEnd="5dp"
             app:menu_fab_label="Action Menu"
             fab:menu_backgroundColor="@android:color/transparent"
