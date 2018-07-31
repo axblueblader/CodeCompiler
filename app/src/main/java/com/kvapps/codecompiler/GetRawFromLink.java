@@ -2,6 +2,7 @@ package com.kvapps.codecompiler;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class GetRawFromLink extends AsyncTask<String, Void, String> {
 
     private AsyncResponse response;
 
-    public GetRawFromLink(AsyncResponse response){
+    GetRawFromLink(AsyncResponse response){
         this.response = response;
     }
     @Override
@@ -40,4 +41,6 @@ public class GetRawFromLink extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
        response.onDataArrive(s);
     }
+
+
 }

@@ -4,14 +4,13 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity implements CompilingActivity.SendMessage {
 
     private TabAdapter adapter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private Toolbar toolBar;
+    //private Toolbar toolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +18,6 @@ public class MainActivity extends AppCompatActivity implements CompilingActivity
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
-
         adapter = new TabAdapter(getSupportFragmentManager());
         adapter.addFragment(new CompilingActivity(), "Code");
         adapter.addFragment(new OutputFragment(), "Output");
@@ -27,20 +25,19 @@ public class MainActivity extends AppCompatActivity implements CompilingActivity
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-
-       /* toolBar = findViewById(R.id.toolbar);
+        //toolBar = findViewById(R.id.toolbar);
         //toolBar.setTitle(null);
         //toolBar.setSubtitle(null);
-        setSupportActionBar(toolBar);
-        if(getSupportActionBar() !=null) getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //setSupportActionBar(toolBar);
+        //if(getSupportActionBar() !=null) getSupportActionBar().setDisplayShowTitleEnabled(false);
         //getSupportActionBar().setTitle("");*/
     }
 
     @Override
-    public void sendData(String message) {
+    public void sendData(String code,String stdin) {
         //String tag = "android:switcher:" + R.id.viewPager + ":" + 1;
         OutputFragment f = (OutputFragment)adapter.getItem(1);
-        f.retrieveAPI(message);
+        f.retrieveAPI(code,stdin);
         setCurrentItem(1,true);
     }
 
