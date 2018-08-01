@@ -2,12 +2,10 @@ package com.kvapps.codecompiler;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +21,6 @@ public class CompilingActivity extends Fragment {
     private EditText currentEditText;
     private FloatingActionButton execBtn;
     private FloatingActionButton pasteLinkBtn;
-
     String testScript = "#include <iostream>\n" +
             "\n" +
             "using namespace std;\n" +
@@ -47,13 +44,16 @@ public class CompilingActivity extends Fragment {
         // Initialize view variables
         codeText = currentEditText = view.findViewById(R.id.codeText);
         stdinText = view.findViewById(R.id.stdinText);
-
+        final EditButtonListenerManager editButtonListenerManager = new EditButtonListenerManager(currentEditText, getActivity());
+        final GetFromLinkButtonManager getFromLinkButtonManager = new GetFromLinkButtonManager(getActivity(), currentEditText);
         codeText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     currentEditText = codeText;
-
+                    editButtonListenerManager.setCurrentEditText(currentEditText);
+                    getFromLinkButtonManager.setCurrentEditText(currentEditText);
+                    //Log.d("kiet", currentEditText.toString());
                     animateViewWeight(stdinText,1.0f);
                     animateViewWeight(codeText,8.0f);
 
@@ -68,7 +68,9 @@ public class CompilingActivity extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     currentEditText = stdinText;
-
+                    editButtonListenerManager.setCurrentEditText(currentEditText);
+                    getFromLinkButtonManager.setCurrentEditText(currentEditText);
+                    //Log.d("kiet", currentEditText.toString());
                     animateViewWeight(codeText,1.0f);
                     animateViewWeight(stdinText,8.0f);
 
@@ -93,7 +95,7 @@ public class CompilingActivity extends Fragment {
         });
 
         //Edit button
-        EditButtonListenerManager editButtonListenerManager = new EditButtonListenerManager(currentEditText, getActivity());
+
         Button tabBtn = view.findViewById(R.id.tabButton);
         Button semicolonBtn = view.findViewById(R.id.semicolonButton);
         Button forBtn = view.findViewById(R.id.forButton);
@@ -105,47 +107,7 @@ public class CompilingActivity extends Fragment {
 
         pasteLinkBtn = view.findViewById(R.id.menu_item_pastelink);
         //https://stackoverflow.com/questions/4134117/edittext-on-a-popup-window
-        pasteLinkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Popup an alert with Edittext in it
-                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-
-                alert.setTitle("Input from link");
-                alert.setMessage("Please paste your RAW link here");
-
-                // Set an EditText view to get user input
-                final EditText input = new EditText(getActivity());
-                input.setHint("https://pastebin.com/raw/asdfgh");
-                //TODO remove this link later on
-                input.setText("https://pastebin.com/raw/0GiN8ySH");
-                alert.setView(input);
-
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        // Do something with value!
-                        GetRawFromLink getRawFromLink = new GetRawFromLink(new GetRawFromLink.AsyncResponse() {
-                            @Override
-                            public void onDataArrive(String output) {
-                                currentEditText.setText(output);
-                            }
-                        });
-                        //TODO set some message when getting data
-                        getRawFromLink.execute(input.getText().toString());
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-
-                alert.show();
-            }
-        });
-
+        pasteLinkBtn.setOnClickListener(getFromLinkButtonManager);
     }
 
     public void animateViewWeight(View view, float endWeight){
