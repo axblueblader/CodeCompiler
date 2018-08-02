@@ -29,6 +29,10 @@ public class EditButtonListenerManager implements View.OnLongClickListener, View
         }
     }
 
+    public void setCurrentEditText(EditText currentEditText){
+        this.currentEditText=currentEditText;
+    }
+
     @Override
     public void onClick(View v) {
         int start= Math.max(currentEditText.getSelectionStart(), 0);
