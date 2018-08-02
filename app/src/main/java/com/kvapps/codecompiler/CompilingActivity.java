@@ -21,17 +21,13 @@ public class CompilingActivity extends Fragment {
     private EditText currentEditText;
     private FloatingActionButton execBtn;
     private FloatingActionButton pasteLinkBtn;
-    String testScript = "#include <iostream>\n" +
-            "\n" +
-            "using namespace std;\n" +
-            "\n" +
-            "int main() {\n" +
-            "\tint x=0;\n cin>>x;\n" +
-            "\tint y=25;\n" +
-            "\tint z=x+y;\n" +
-            "\n" +
-            "\tcout<<\"Sum of x+y = \" << z;\n" +
-            "}";
+    String testScript = "#include <iostream>\n" + "\n" + "using namespace std;\n" + "\n" +
+            "int main() {\n" + "\tint x=0;\n" + "\tcin>> x; // This is a comment\n" + "\tint y=25;\n" +
+            "\tint z=x+y;\n" + "\t/* This is\n" + "\t* also\n" + "\t* a comment */\n" +
+            "\tcout<<\"Some strings with \\\"escape double-quotes\\\" \\n\";\n" +
+            "\tcout<<'\\n';\n" +
+            "\tcout<<\"Sum of x+y = \" << z << \"\\n\";\n" + "\t/** Another one ****/\n" +
+            "\t/* And a\n" + "\t** nother\n" + "\t****/\n" + "}\n";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,6 +75,7 @@ public class CompilingActivity extends Fragment {
                 }
             }
         });
+
         // Initialize view methods and properties
 
         codeText.setMovementMethod(new ScrollingMovementMethod());

@@ -28,7 +28,23 @@ public class SyntaxHighlight implements TextWatcher {
             Color.MAGENTA
     );
 
-    final ColorScheme[] schemes = { keywords, numbers };
+    // Regex taken from
+    // https://stackoverflow.com/questions/171480/regex-grabbing-values-between-quotation-marks
+    ColorScheme inStrings = new ColorScheme(
+            Pattern.compile("([\"'])(.*?[^\\\\])\\1"),
+            Color.parseColor("#da7c00")
+    );
+
+    // Regex taken from
+    // https://stackoverflow.com/questions/5989315/regex-for-match-replacing-javascript-comments-both-multiline-and-inline
+    // Multi line: /(\/\*(?:(?!\*\/).|[\n\r])*\*\/)/
+    // Single line: /(\/\/[^\n\r]*[\n\r]+)/
+    ColorScheme comments = new ColorScheme(
+            Pattern.compile("(\\/\\*(?:(?!\\*\\/).|[\\n\\r])*\\*\\/)|(\\/\\/[^\\n\\r]*[\\n\\r]+)",Pattern.MULTILINE|Pattern.DOTALL),
+            Color.GRAY
+    );
+
+    final ColorScheme[] schemes = { keywords, numbers ,inStrings, comments};
 
     @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
